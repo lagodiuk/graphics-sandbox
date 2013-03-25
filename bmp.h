@@ -26,4 +26,4 @@ void set_pixel(int x, int y, Color c, Canvas * canv);
 
 Color get_pixel(int x, int y, Canvas * canv);
 
-void write_bmp(char file_name[], Canvas * canv);
+int write_bmp(char file_name[], Canvas * canv);

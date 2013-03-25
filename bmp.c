@@ -136,7 +136,7 @@ void set_biClrImportant(Byte bmp_info_header[]) {
         bmp_info_header[39] = 0;
 }
 
-void write_bmp(char file_name[], Canvas * canv) {
+int write_bmp(char file_name[], Canvas * canv) {
 	int pad = get_padding(canv->w);
 	int row_len = (canv->w + pad) * 3;
 	int raster_size = row_len * canv->h;
@@ -163,6 +163,10 @@ void write_bmp(char file_name[], Canvas * canv) {
 	set_biClrImportant(bmp_info_header);
 
 	FILE * f = fopen(file_name, "wb");
+	if(f == NULL) {
+		return 0;
+	}
+
 	fwrite(bmp_file_header, 1, 14, f);
 	fwrite(bmp_info_header, 1, 40, f);
 
@@ -181,4 +185,6 @@ void write_bmp(char file_name[], Canvas * canv) {
 
 	fclose(f);
 	free(row);
+
+	return 1;
 }

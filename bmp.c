@@ -180,4 +180,5 @@ void write_bmp(char file_name[], Canvas * canv) {
 	}
 
 	fclose(f);
+	free(row);
 }

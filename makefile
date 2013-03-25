@@ -1,3 +1,9 @@
+clean:
+	rm -f *.o
+	rm -f *.bmp
+	rm -f ./mandelbrot
+	rm -f ./serpinsky
+
 bmp.o: bmp.c bmp.h
 	gcc -c bmp.c
 

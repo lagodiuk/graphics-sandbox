@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "bmp.h"
 
-Color rgb(Byte r, Byte g, Byte b) {
+inline Color rgb(Byte r, Byte g, Byte b) {
 	Color c;
 	c.r = r;
 	c.g = g;
@@ -18,12 +18,12 @@ Canvas * new_canvas(int width, int height) {
 	return c;
 }
 
-void set_pixel(int x, int y, Color c, Canvas * canv) {
+inline void set_pixel(int x, int y, Color c, Canvas * canv) {
 	int offs = y * canv->w + x;
 	canv->data[offs] = c;
 }
 
-Color get_pixel(int x, int y, Canvas * canv) {
+inline Color get_pixel(int x, int y, Canvas * canv) {
 	int offs = y * canv->w + x;
 	return canv->data[offs];
 }

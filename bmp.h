@@ -18,12 +18,12 @@ struct canvas {
 }
 Canvas;
 
-Color rgb(Byte r, Byte g, Byte b);
+inline Color rgb(Byte r, Byte g, Byte b);
 
 Canvas * new_canvas(int width, int height);
 
-void set_pixel(int x, int y, Color c, Canvas * canv);
+inline void set_pixel(int x, int y, Color c, Canvas * canv);
 
-Color get_pixel(int x, int y, Canvas * canv);
+inline Color get_pixel(int x, int y, Canvas * canv);
 
 int write_bmp(char file_name[], Canvas * canv);

@@ -33,6 +33,78 @@ inline Color get_pixel(int x, int y, Canvas * canv) {
 	return canv->data[offs];
 }
 
+int write_bmp(char file_name[], Canvas * canv) {
+
+	void set_bfType(Byte bmp_file_header[]);
+	void set_bfSize(int size, Byte bmp_file_header[]);
+	void set_bfReserved1(Byte bmp_file_header[]);
+	void set_bfReserved2(Byte bmp_file_header[]);
+	void set_bfOffBits(Byte bmp_file_header[]);
+	int get_padding(int w);
+	void set_biSize(Byte bmp_info_header[]);
+	void set_biWidth(int w, Byte bmp_info_header[]);
+	void set_biHeight(int h, Byte bmp_info_header[]);
+	void set_biPlanes(Byte bmp_info_header[]);
+	void set_biBitCount(Byte bmp_info_header[]);
+	void set_biCompression(Byte bmp_info_header[]);
+	void set_biSizeImage(int s, Byte bmp_info_header[]);
+	void set_biXPixelsPerMeter(Byte bmp_info_header[]);
+	void set_biYPixelsPerMeter(Byte bmp_info_header[]);
+	void set_biClrUsed(Byte bmp_info_header[]);
+	void set_biClrImportant(Byte bmp_info_header[]);
+
+	int pad = get_padding(canv->w);
+	int row_len = (canv->w + pad) * 3;
+	int raster_size = row_len * canv->h;
+	int file_size = raster_size + 54;
+
+	Byte bmp_file_header[14];
+	set_bfType(bmp_file_header);
+	set_bfSize(file_size, bmp_file_header);
+	set_bfReserved1(bmp_file_header);
+	set_bfReserved2(bmp_file_header);
+	set_bfOffBits(bmp_file_header);
+
+	Byte bmp_info_header[40];
+	set_biSize(bmp_info_header);
+	set_biWidth(canv->w, bmp_info_header);
+	set_biHeight(canv->h, bmp_info_header);
+	set_biPlanes(bmp_info_header);
+	set_biBitCount(bmp_info_header);
+	set_biCompression(bmp_info_header);
+	set_biSizeImage(raster_size, bmp_info_header);
+	set_biXPixelsPerMeter(bmp_info_header);
+	set_biYPixelsPerMeter(bmp_info_header);  
+	set_biClrUsed(bmp_info_header);
+	set_biClrImportant(bmp_info_header);
+
+	FILE * f = fopen(file_name, "wb");
+	if(f == NULL) {
+		return 0;
+	}
+
+	fwrite(bmp_file_header, 1, 14, f);
+	fwrite(bmp_info_header, 1, 40, f);
+
+	int i;
+	int j;
+	Byte * row = (Byte *) calloc(row_len, 1);
+	for(i = 0; i < canv->h; i++) {
+		for(j = 0; j < canv->w; j++) {
+			Color c = get_pixel(j, canv->h - i - 1, canv);
+			row[j * 3] = c.b;
+			row[j * 3 + 1] = c.g;
+			row[j * 3 + 2] = c.r;
+		}
+		fwrite(row, 1, row_len, f);
+	}
+
+	fclose(f);
+	free(row);
+
+	return 1;
+}
+
 void set_bfType(Byte bmp_file_header[]) {
 	bmp_file_header[0] = 'B';
 	bmp_file_header[1] = 'M';
@@ -139,57 +211,4 @@ void set_biClrImportant(Byte bmp_info_header[]) {
         bmp_info_header[37] = 0;
         bmp_info_header[38] = 0;
         bmp_info_header[39] = 0;
-}
-
-int write_bmp(char file_name[], Canvas * canv) {
-	int pad = get_padding(canv->w);
-	int row_len = (canv->w + pad) * 3;
-	int raster_size = row_len * canv->h;
-	int file_size = raster_size + 54;
-
-	Byte bmp_file_header[14];
-	set_bfType(bmp_file_header);
-	set_bfSize(file_size, bmp_file_header);
-	set_bfReserved1(bmp_file_header);
-	set_bfReserved2(bmp_file_header);
-	set_bfOffBits(bmp_file_header);
-
-	Byte bmp_info_header[40];
-	set_biSize(bmp_info_header);
-	set_biWidth(canv->w, bmp_info_header);
-	set_biHeight(canv->h, bmp_info_header);
-	set_biPlanes(bmp_info_header);
-	set_biBitCount(bmp_info_header);
-	set_biCompression(bmp_info_header);
-	set_biSizeImage(raster_size, bmp_info_header);
-	set_biXPixelsPerMeter(bmp_info_header);
-	set_biYPixelsPerMeter(bmp_info_header);  
-	set_biClrUsed(bmp_info_header);
-	set_biClrImportant(bmp_info_header);
-
-	FILE * f = fopen(file_name, "wb");
-	if(f == NULL) {
-		return 0;
-	}
-
-	fwrite(bmp_file_header, 1, 14, f);
-	fwrite(bmp_info_header, 1, 40, f);
-
-	int i;
-	int j;
-	Byte * row = (Byte *) calloc(row_len, 1);
-	for(i = 0; i < canv->h; i++) {
-		for(j = 0; j < canv->w; j++) {
-			Color c = get_pixel(j, canv->h - i - 1, canv);
-			row[j * 3] = c.b;
-			row[j * 3 + 1] = c.g;
-			row[j * 3 + 2] = c.r;
-		}
-		fwrite(row, 1, row_len, f);
-	}
-
-	fclose(f);
-	free(row);
-
-	return 1;
 }

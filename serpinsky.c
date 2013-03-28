@@ -37,7 +37,8 @@ int main() {
 				break;
 		}
 	}
-
 	write_bmp("fract.bmp", canv);
+	release(canv);
+
 	return 0;
 }

@@ -3,7 +3,7 @@ unsigned char
 Byte;
 
 typedef
-struct color {
+struct {
 	Byte r;
 	Byte g;
 	Byte b;
@@ -11,7 +11,7 @@ struct color {
 Color;
 
 typedef
-struct canvas {
+struct {
 	int w;
 	int h;
 	Color * data;
@@ -21,6 +21,8 @@ Canvas;
 inline Color rgb(Byte r, Byte g, Byte b);
 
 Canvas * new_canvas(int width, int height);
+
+void release(Canvas * canv);
 
 inline void set_pixel(int x, int y, Color c, Canvas * canv);
 

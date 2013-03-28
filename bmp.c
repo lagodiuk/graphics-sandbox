@@ -18,6 +18,11 @@ Canvas * new_canvas(int width, int height) {
 	return c;
 }
 
+void release(Canvas * c) {
+	free(c->data);
+	free(c);
+}
+
 inline void set_pixel(int x, int y, Color c, Canvas * canv) {
 	int offs = y * canv->w + x;
 	canv->data[offs] = c;

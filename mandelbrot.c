@@ -54,5 +54,6 @@ int main() {
 	}
 	write_bmp("m.bmp", canv);
 
+	release(canv);
 	return 0;
 }
